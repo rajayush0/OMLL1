@@ -1,0 +1,1354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Sonpapdi 🌹</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&family=Caveat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rose: #c9184a;
+    --rose-light: #ff8fa3;
+    --rose-pale: #ffd6e0;
+    --cream: #fff9f0;
+    --gold: #d4a843;
+    --deep: #0d0814;
+    --midnight: #120a1e;
+    --dusk: #1e1035;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--deep);
+    font-family: 'DM Sans', sans-serif;
+    overflow-x: hidden;
+    overflow-y: auto;
+    color: #fff;
+    cursor: none;
+    height: 100vh;
+    position: relative;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed; width: 18px; height: 18px;
+    background: var(--rose-light); border-radius: 50%;
+    pointer-events: none; z-index: 10000;
+    transform: translate(-50%,-50%);
+    transition: transform 0.1s, background 0.2s;
+    mix-blend-mode: screen;
+  }
+  .cursor-trail {
+    position: fixed; width: 40px; height: 40px;
+    border: 1.5px solid var(--rose-light);
+    border-radius: 50%; pointer-events: none; z-index: 9999;
+    transform: translate(-50%,-50%);
+    transition: all 0.18s ease;
+    opacity: 0.5;
+  }
+
+  /* STARS */
+  #starfield {
+    position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
+  }
+  .star { position: absolute; background: white; border-radius: 50%; animation: tw var(--d) ease-in-out infinite alternate; }
+  @keyframes tw { from { opacity: 0.05; } to { opacity: 0.9; } }
+
+  /* PETALS */
+  #petalfield { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+  .petal {
+    position: absolute; width: 10px; height: 13px;
+    background: radial-gradient(ellipse at 30% 30%, #ffb3c6, #c9184a);
+    border-radius: 50% 50% 50% 0;
+    animation: pfall var(--pd) linear infinite;
+    top: -20px;
+  }
+  @keyframes pfall {
+    0% { transform: translateY(-20px) rotate(0deg) translateX(0); opacity:0.8; }
+    50% { transform: translateY(50vh) rotate(200deg) translateX(calc(var(--sw)*1px)); opacity:0.6; }
+    100% { transform: translateY(110vh) rotate(400deg) translateX(0); opacity:0; }
+  }
+
+  /* PAGE SYSTEM - Scroll-based for better mobile experience */
+  .page {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+    opacity: 0;
+    transform: translateY(50px);
+    transition: all 0.8s cubic-bezier(0.77,0,0.18,1);
+    z-index: 10;
+  }
+  .page.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .page.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  /* NAV DOTS */
+  #navdots {
+    position: fixed; right: 1.5rem; top: 50%; transform: translateY(-50%);
+    z-index: 1000; display: flex; flex-direction: column; gap: 10px;
+  }
+  .ndot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: rgba(255,143,163,0.3); cursor: pointer;
+    transition: all 0.3s; border: 1px solid rgba(255,143,163,0.5);
+  }
+  .ndot.active { background: var(--rose-light); transform: scale(1.5); }
+
+  /* NEXT BUTTON */
+  .nav-btn {
+    position: fixed; bottom: 2.5rem; left: 50%; transform: translateX(-50%);
+    z-index: 1000; padding: 0.9rem 2.5rem;
+    background: transparent; border: 1.5px solid var(--rose-light);
+    color: var(--rose-light); border-radius: 50px;
+    font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500;
+    cursor: pointer; transition: all 0.3s; letter-spacing: 1px;
+    backdrop-filter: blur(5px);
+  }
+  .nav-btn:hover { background: rgba(255,143,163,0.15); transform: translateX(-50%) translateY(-3px); box-shadow: 0 10px 30px rgba(201,24,74,0.3); }
+
+  /* PAGE BACKGROUNDS */
+  #p0 { background: radial-gradient(ellipse at 60% 40%, #2d0a28 0%, #0d0814 60%); }
+  #p1 { background: radial-gradient(ellipse at 30% 60%, #0a1a2e 0%, #0d0814 70%); }
+  #p2a { background: radial-gradient(ellipse at 55% 35%, #24110d 0%, #0d0814 70%); }
+  #p2 { background: radial-gradient(ellipse at 70% 30%, #1a0a0a 0%, #0d0814 70%); }
+  #p3 { background: radial-gradient(ellipse at 40% 70%, #0a1810 0%, #0d0814 70%); }
+  #p4 { background: radial-gradient(ellipse at 50% 50%, #1a1000 0%, #0d0814 70%); }
+  #p5 { background: radial-gradient(ellipse at 60% 40%, #150522 0%, #0d0814 70%); }
+  #p6 { background: radial-gradient(ellipse at 50% 50%, #1a0020 0%, #0d0814 60%); }
+  #p7 { background: radial-gradient(ellipse at 40% 50%, #001020 0%, #0d0814 70%); }
+  #p8 { background: radial-gradient(ellipse at 50% 40%, #200510 0%, #0d0814 60%); }
+
+  /* TYPOGRAPHY */
+  .serif { font-family: 'Cormorant Garamond', serif; }
+  .hand  { font-family: 'Caveat', cursive; }
+
+  h1.hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: 300;
+    letter-spacing: -1px;
+    line-height: 1.1;
+    text-align: center;
+  }
+  .gold-text { color: var(--gold); }
+  .rose-text { color: var(--rose-light); }
+  .italic { font-style: italic; }
+
+  /* GLOW ANIMATIONS */
+  @keyframes fadeUp   { from { opacity:0; transform: translateY(40px); } to { opacity:1; transform:none; } }
+  @keyframes fadeIn   { from { opacity:0; } to { opacity:1; } }
+  @keyframes float    { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-12px);} }
+  @keyframes heartbeat{ 0%,100%{transform:scale(1);} 14%{transform:scale(1.18);} 28%{transform:scale(1);} 42%{transform:scale(1.1);} }
+  @keyframes shimmer  { 0%{background-position:0% 50%;} 50%{background-position:100% 50%;} 100%{background-position:0% 50%;} }
+  @keyframes spin     { from{transform:rotate(0deg);} to{transform:rotate(360deg);} }
+  @keyframes pulse    { 0%,100%{box-shadow:0 0 0 0 rgba(201,24,74,0.4);} 50%{box-shadow:0 0 0 20px rgba(201,24,74,0);} }
+  @keyframes blink    { 0%,100%{opacity:1;} 50%{opacity:0;} }
+
+  .anim-fadeup { animation: fadeUp 0.9s ease both; }
+  .anim-float  { animation: float 3s ease-in-out infinite; }
+
+  /* CARD STYLE */
+  .glass-card {
+    background: rgba(255,255,255,0.04);
+    backdrop-filter: blur(15px);
+    border: 1px solid rgba(255,143,163,0.2);
+    border-radius: 24px;
+    padding: 2.5rem;
+    max-width: 680px;
+    width: 100%;
+  }
+
+  /* VOCAB CARDS */
+  .vocab-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.2rem; max-width: 720px; width: 100%; }
+  .vocab-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,143,163,0.15);
+    border-radius: 16px; padding: 1.3rem 1.5rem;
+    transition: all 0.3s;
+  }
+  .vocab-card:hover { transform: translateY(-4px); background: rgba(255,143,163,0.08); border-color: var(--rose-light); }
+  .vocab-label { font-family: 'Caveat', cursive; font-size: 1.4rem; color: var(--rose-light); margin-bottom: 0.3rem; }
+  .vocab-desc  { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.5; }
+
+  /* MEMORY CARDS */
+  .memory-row { display: flex; flex-direction: column; gap: 1.2rem; max-width: 620px; width: 100%; }
+  .memory-item {
+    display: flex; align-items: flex-start; gap: 1.2rem;
+    background: rgba(255,255,255,0.04); border-radius: 16px;
+    padding: 1.2rem 1.5rem; border-left: 3px solid var(--rose);
+    animation: fadeUp 0.6s ease both;
+  }
+  .memory-icon { font-size: 2rem; flex-shrink: 0; }
+  .memory-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--rose-pale); margin-bottom: 0.3rem; }
+  .memory-text  { font-size: 0.9rem; color: rgba(255,255,255,0.6); line-height: 1.6; }
+
+  /* ROSE */
+  .rose-svg { width: 120px; height: 120px; animation: float 4s ease-in-out infinite; filter: drop-shadow(0 0 20px rgba(201,24,74,0.5)); }
+
+  /* SORRY LETTERS */
+  .sorry-letters span {
+    display: inline-block;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 600;
+    color: var(--rose-light);
+    animation: popIn 0.4s cubic-bezier(0.34,1.56,0.64,1) both;
+  }
+  @keyframes popIn { from{transform:scale(0) rotate(-10deg);opacity:0;} to{transform:none;opacity:1;} }
+
+  /* TIMELINE */
+  .timeline { position: relative; max-width: 560px; width: 100%; }
+  .timeline::before {
+    content: ''; position: absolute; left: 18px; top: 10px; bottom: 10px;
+    width: 2px; background: linear-gradient(to bottom, var(--rose), transparent);
+  }
+  .tl-item { display: flex; gap: 1.5rem; margin-bottom: 1.5rem; animation: fadeUp 0.6s ease both; }
+  .tl-dot {
+    width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+    background: var(--deep); border: 2px solid var(--rose);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; z-index: 1; animation: pulse 2s infinite;
+  }
+  .tl-content { padding-top: 0.5rem; }
+  .tl-title { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: var(--rose-pale); margin-bottom: 0.25rem; }
+  .tl-text  { font-size: 0.88rem; color: rgba(255,255,255,0.55); line-height: 1.6; }
+
+  /* PHOTO GALLERY */
+  .photo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+  }
+  .photo-item {
+    background: rgba(255,255,255,0.04);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,143,163,0.2);
+    transition: all 0.3s ease;
+  }
+  .photo-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--rose-light);
+    box-shadow: 0 10px 30px rgba(201,24,74,0.2);
+  }
+  .photo-item img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+  }
+  .photo-caption {
+    padding: 0.85rem 1rem;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    font-family: 'Caveat', cursive;
+    background: rgba(0,0,0,0.05);
+  }
+
+  /* VIDEO GALLERY */
+  .video-gallery {
+    margin-top: 2rem;
+  }
+  .video-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .video-item {
+    background: rgba(255,255,255,0.04);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,143,163,0.2);
+    transition: all 0.3s ease;
+  }
+  .video-item:hover {
+    border-color: var(--gold);
+    box-shadow: 0 10px 30px rgba(212,168,67,0.2);
+  }
+  .video-item video {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+  }
+  .video-caption {
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    font-family: 'Caveat', cursive;
+  }
+
+  /* COMPLETE GALLERY */
+  .complete-gallery {
+    width: 100%;
+  }
+  .gallery-section {
+    margin-bottom: 3rem;
+  }
+  .photo-masonry {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+  .masonry-item {
+    background: rgba(255,255,255,0.04);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,143,163,0.2);
+    transition: all 0.3s ease;
+    position: relative;
+  }
+  .masonry-item:hover {
+    transform: translateY(-5px);
+    border-color: var(--rose-light);
+    box-shadow: 0 10px 30px rgba(201,24,74,0.2);
+  }
+  .masonry-item.large {
+    grid-column: span 2;
+    grid-row: span 1;
+  }
+  .masonry-item img {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    object-fit: cover;
+    display: block;
+  }
+  .masonry-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(transparent, rgba(0,0,0,0.8));
+    color: white;
+    padding: 1rem;
+    font-size: 0.85rem;
+    font-family: 'Caveat', cursive;
+    text-align: center;
+  }
+
+  /* VIDEO SHOWCASE */
+  .video-showcase {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  .video-showcase-item {
+    background: rgba(255,255,255,0.04);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,143,163,0.2);
+    transition: all 0.3s ease;
+  }
+  .video-showcase-item:hover {
+    border-color: var(--gold);
+    box-shadow: 0 10px 30px rgba(212,168,67,0.2);
+  }
+  .video-showcase-item video {
+    width: 100%;
+    height: 200px;
+    object-fit: cover;
+    display: block;
+  }
+  .video-showcase-caption {
+    padding: 1rem;
+    font-size: 0.9rem;
+    color: rgba(255,255,255,0.8);
+    text-align: center;
+    font-family: 'Caveat', cursive;
+  }
+
+  /* PROMISE */
+  .promise-ring {
+    width: 220px; height: 220px; border-radius: 50%;
+    border: 2px solid var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    position: relative; margin: 1.5rem auto;
+    animation: spin 30s linear infinite;
+  }
+  .promise-ring-inner {
+    width: 170px; height: 170px; border-radius: 50%;
+    border: 1px solid rgba(212,168,67,0.4);
+    display: flex; align-items: center; justify-content: center;
+    animation: spin 30s linear infinite reverse;
+  }
+  .promise-heart { font-size: 4rem; animation: heartbeat 1.5s ease-in-out infinite; }
+
+  /* MARINE DRIVE */
+  .shoulder-scene {
+    position: relative; width: 340px; height: 180px; margin: 1.5rem 0;
+  }
+  .wave {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 50px;
+    background: linear-gradient(180deg, transparent, rgba(100,200,255,0.3));
+    border-radius: 50% 50% 0 0;
+    animation: wave 3s ease-in-out infinite alternate;
+  }
+  @keyframes wave { from{transform:scaleX(1) translateY(0);} to{transform:scaleX(1.05) translateY(-8px);} }
+  .moon-scene { position: absolute; top: 10px; right: 30px; width: 50px; height: 50px; background: rgba(255,220,100,0.2); border-radius: 50%; box-shadow: 0 0 30px rgba(255,220,100,0.3); animation: float 5s ease-in-out infinite; }
+
+  /* FINAL PAGE */
+  .gradient-text {
+    background: linear-gradient(135deg, var(--rose-light), var(--gold), var(--rose-light));
+    background-size: 300% 300%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s ease infinite;
+  }
+
+  /* CONFETTI */
+  .conf { position:fixed; pointer-events:none; z-index:9999; border-radius:2px; animation: confDrop 1.8s ease forwards; }
+  @keyframes confDrop { 0%{transform:translateY(-10vh) rotate(0);opacity:1;} 100%{transform:translateY(100vh) rotate(720deg);opacity:0;} }
+
+  /* SCROLL PROMPT */
+  .scroll-hint { font-size: 0.75rem; letter-spacing: 3px; text-transform: uppercase; color: rgba(255,255,255,0.3); margin-top: 1.5rem; animation: blink 2s infinite; }
+
+  /* RESPONSIVE */
+  @media(max-width:768px) {
+    body { cursor: auto; }
+    
+    /* Hide custom cursor on mobile */
+    .cursor, .cursor-trail { display: none; }
+    
+    /* Adjust page padding */
+    .page { padding: 1rem; }
+    
+    /* Hero title */
+    h1.hero-title { font-size: clamp(2rem, 8vw, 3.5rem); }
+    
+    /* Navigation dots - move to bottom */
+    #navdots {
+      position: fixed;
+      right: auto;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
+      flex-direction: row;
+      gap: 8px;
+    }
+    
+    /* Navigation button */
+    .nav-btn {
+      bottom: 5.5rem;
+      padding: 0.7rem 2rem;
+      font-size: 0.85rem;
+    }
+    
+    /* Glass card adjustments */
+    .glass-card {
+      padding: 1.5rem 1.2rem;
+      border-radius: 16px;
+    }
+    
+    /* Vocab grid */
+    .vocab-grid {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      max-width: 100%;
+    }
+    
+    .vocab-card {
+      padding: 1rem 1.2rem;
+    }
+    
+    /* Timeline */
+    .timeline {
+      max-width: 100%;
+    }
+    
+    .timeline::before {
+      left: 12px;
+    }
+    
+    .tl-item {
+      gap: 1rem;
+      margin-bottom: 1.2rem;
+    }
+    
+    .tl-dot {
+      width: 32px;
+      height: 32px;
+      font-size: 0.9rem;
+    }
+    
+    .tl-title {
+      font-size: 1.1rem;
+    }
+    
+    .tl-text {
+      font-size: 0.85rem;
+    }
+    
+    /* Memory items */
+    .memory-item {
+      padding: 1rem 1.2rem;
+      gap: 1rem;
+    }
+    
+    .memory-icon {
+      font-size: 1.5rem;
+    }
+    
+    .memory-title {
+      font-size: 1.1rem;
+    }
+    
+    .memory-text {
+      font-size: 0.85rem;
+    }
+    
+    /* Promise ring */
+    .promise-ring {
+      width: 160px;
+      height: 160px;
+      margin: 1rem auto;
+    }
+    
+    .promise-ring-inner {
+      width: 130px;
+      height: 130px;
+    }
+    
+    .promise-heart {
+      font-size: 2.5rem;
+    }
+    
+    /* Scene illustration */
+    .shoulder-scene {
+      width: 280px;
+      height: 140px;
+    }
+    
+    /* Text sizes */
+    h2.serif {
+      font-size: clamp(1.5rem, 5vw, 2.5rem);
+    }
+    
+    /* Scroll hint */
+    .scroll-hint {
+      font-size: 0.65rem;
+      margin-top: 1.5rem;
+    }
+  }
+  
+  @media(max-width:480px) {
+    .page { padding: 0.8rem; }
+    
+    h1.hero-title { font-size: clamp(1.8rem, 7vw, 2.8rem); }
+    
+    /* Navigation dots smaller and more compact */
+    #navdots {
+      gap: 6px;
+    }
+    
+    .ndot {
+      width: 6px;
+      height: 6px;
+    }
+    
+    /* Button easier to tap */
+    .nav-btn {
+      bottom: 4.8rem;
+      padding: 0.6rem 1.5rem;
+      font-size: 0.75rem;
+      letter-spacing: 0.5px;
+    }
+    
+    /* Cards with more compact padding */
+    .glass-card {
+      padding: 1.2rem 1rem;
+      border-radius: 14px;
+    }
+    
+    .vocab-card {
+      padding: 0.9rem 1rem;
+    }
+    
+    .vocab-label {
+      font-size: 1.2rem;
+    }
+    
+    .vocab-desc {
+      font-size: 0.8rem;
+    }
+    
+    /* Timeline more compact */
+    .tl-item {
+      gap: 0.8rem;
+      margin-bottom: 1rem;
+    }
+    
+    .tl-dot {
+      width: 28px;
+      height: 28px;
+      font-size: 0.85rem;
+    }
+    
+    .tl-title {
+      font-size: 1rem;
+    }
+    
+    .tl-text {
+      font-size: 0.8rem;
+      line-height: 1.5;
+    }
+    
+    /* Memory items compact */
+    .memory-item {
+      padding: 0.9rem 1rem;
+      gap: 0.8rem;
+    }
+    
+    .memory-icon {
+      font-size: 1.3rem;
+    }
+    
+    .memory-title {
+      font-size: 1rem;
+    }
+    
+    .memory-text {
+      font-size: 0.8rem;
+    }
+    
+    /* Promise ring smaller */
+    .promise-ring {
+      width: 130px;
+      height: 130px;
+    }
+    
+    .promise-ring-inner {
+      width: 105px;
+      height: 105px;
+    }
+    
+    .promise-heart {
+      font-size: 2rem;
+    }
+    
+    /* Scene smaller */
+    .shoulder-scene {
+      width: 240px;
+      height: 120px;
+    }
+    
+    /* Smaller headings */
+    h2.serif {
+      font-size: clamp(1.3rem, 5vw, 2rem);
+    }
+    
+    /* Grid for mood section */
+    .glass-card > div[style*="grid"] {
+      grid-template-columns: 1fr !important;
+      gap: 0.8rem !important;
+    }
+    
+    /* Custom subtitle styling */
+    p[style*="Caveat"] {
+      font-size: 1rem;
+    }
+    
+    /* Images responsive */
+    img {
+      max-width: 100%;
+      height: auto;
+    }
+    
+    /* Gallery responsive */
+    .photo-masonry {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+    
+    .masonry-item.large {
+      grid-column: span 1;
+      grid-row: span 1;
+    }
+    
+    .video-showcase {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-trail" id="curT"></div>
+<div id="starfield"></div>
+<div id="petalfield"></div>
+
+<nav id="navdots"></nav>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE 0: TITLE / ARRIVAL -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page visible" id="p0">
+  <div style="text-align:center; z-index:2;">
+    <div style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--rose-light); letter-spacing:3px; margin-bottom:1.5rem; opacity:0.7; animation: fadeIn 1.5s ease 0.5s both;">
+      a love letter in pages
+    </div>
+    <h1 class="hero-title" style="animation: fadeUp 1s ease 0.3s both;">
+      For my<br>
+      <span class="italic gold-text">Sonpapdi</span>
+    </h1>
+    <p style="font-family:'DM Sans'; font-size:1rem; color:rgba(255,255,255,0.5); margin-top:1.5rem; animation: fadeUp 1s ease 0.7s both; letter-spacing:1px;">
+      scroll through our world, love 🌹
+    </p>
+    <div style="margin-top:2.5rem; animation: float 3s ease-in-out infinite, fadeIn 1s ease 1s both;">
+      <img src="sonpapdi-website/public/assets/img3.jpeg" 
+           alt="Us together" 
+           style="width: 200px; height: 200px; object-fit: cover; border-radius: 50%; border: 4px solid var(--rose-light); box-shadow: 0 0 30px rgba(201,24,74,0.4);">
+    </div>
+    <p class="scroll-hint" style="margin-top: 3rem;">tap next to begin</p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE 1: OUR WORLD / VOCABULARY -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page hidden-right" id="p1">
+  <div style="z-index:2; width:100%; max-width:800px;">
+    <p style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--rose-light); text-align:center; margin-bottom:0.5rem; animation: fadeIn 0.6s ease both;">our little world 🌸</p>
+    <h2 class="serif" style="font-size:clamp(1.8rem,5vw,3rem); text-align:center; font-weight:300; margin-bottom:2rem; animation: fadeUp 0.7s ease 0.1s both;">
+      The words only <span class="italic rose-text">we</span> understand
+    </h2>
+    <div class="vocab-grid">
+      <div class="vocab-card" style="animation-delay:0.1s;" class="anim-fadeup">
+        <div class="vocab-label">Sonpapdi 🍬</div>
+        <div class="vocab-desc">What I call you — because you're sweet, rare, and melt-in-my-heart perfect. No one else gets this name.</div>
+      </div>
+      <div class="vocab-card" style="animation-delay:0.2s;">
+        <div class="vocab-label">Bhadwa 😄</div>
+        <div class="vocab-desc">When I say <em>bhadwa</em> instead of <em>bharwa</em> for that karele ka bharwa — only you know what I actually mean!</div>
+      </div>
+      <div class="vocab-card" style="animation-delay:0.3s;">
+        <div class="vocab-label">Khos ke 👕</div>
+        <div class="vocab-desc">My Bhojpuri word for tucking in a shirt. Only you understand my vocabulary, love.</div>
+      </div>
+      <div class="vocab-card" style="animation-delay:0.4s;">
+        <div class="vocab-label">"Grogurs" 🤭</div>
+        <div class="vocab-desc">My way of saying <em>gorgeous</em>. And "stunning" — still working on it. But you are both, always.</div>
+      </div>
+      <div class="vocab-card" style="animation-delay:0.5s;">
+        <div class="vocab-label">Your "tase" 😂</div>
+        <div class="vocab-desc">When you say <em>tase</em> instead of <em>taste</em> — it's the cutest thing and I secretly love it every single time.</div>
+      </div>
+      <div class="vocab-card" style="animation-delay:0.6s;">
+        <div class="vocab-label">The Rose 🌹</div>
+        <div class="vocab-desc">I bring it every time we meet. Okay — almost every time. Sometimes I forget. But the thought is always there.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE 2: OUR STORY / PATNA -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page hidden-right" id="p2a">
+  <div style="z-index:2; text-align:center; max-width:640px;">
+    <p style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--rose-light); margin-bottom:0.5rem; animation: fadeIn 0.6s both;">a December evening in Patna ✨</p>
+    <h2 class="serif" style="font-size:clamp(2rem,5vw,3.2rem); font-weight:300; margin-bottom:0.5rem; animation: fadeUp 0.7s ease 0.1s both;">
+      <span class="italic">Marine Drive + Church</span>
+    </h2>
+    <p style="color:rgba(255,255,255,0.4); font-size:0.9rem; letter-spacing:2px; margin-bottom:2rem; animation: fadeIn 0.7s ease 0.3s both;">25 December — the day I felt you like never before</p>
+
+    <div class="glass-card" style="animation: fadeUp 0.8s ease 0.3s both; text-align:left;">
+      <p class="serif italic" style="font-size:1.5rem; color:var(--rose-pale); line-height:1.7; margin-bottom:1.2rem;">
+        "The most unforgettable evenings are the ones where the little moments make you fall in love all over again. This one was made of soft light, shy laughter, and the warmth of your hand in mine."
+      </p>
+      <p style="color:rgba(255,255,255,0.55); line-height:1.8; font-size:0.95rem;">
+        In the church, I watched you struggle with the candle flame. When I reached out to help, every nervous smile and thankful look felt like a confession. That quiet moment made my heart louder than the bells.
+      </p>
+      <p style="color:rgba(255,255,255,0.55); line-height:1.8; font-size:0.95rem; margin-top:1rem;">
+        Later, at Marine Drive with tea warming our hands, the city lights sparkled and I felt something gentle and real bloom inside me. I knew then that this feeling was more than a fancy — it was love, slow and sure.
+      </p>
+      <div style="margin-top:1.5rem; padding-top:1.2rem; border-top:1px solid rgba(255,143,163,0.15); display:flex; align-items:center; gap:0.8rem;">
+        <span style="font-size:1.8rem;">🌙</span>
+        <span style="font-family:'Caveat',cursive; font-size:1.2rem; color:var(--gold);">Thank you for letting me be the one to help you, to sit close, and to fall deeper with you.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE 3: OUR STORY / VATIKA -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page hidden-right" id="p2">
+  <div style="z-index:2; text-align:center; max-width:640px;">
+    <p style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--rose-light); margin-bottom:0.5rem; animation: fadeIn 0.6s both;">where it all began 🌿</p>
+    <h2 class="serif" style="font-size:clamp(2rem,5vw,3.2rem); font-weight:300; margin-bottom:0.5rem; animation: fadeUp 0.7s ease 0.1s both;">
+      <span class="italic">Vatika Restaurant</span>
+    </h2>
+    <p style="color:rgba(255,255,255,0.4); font-size:0.9rem; letter-spacing:2px; margin-bottom:2rem; animation: fadeIn 0.7s ease 0.3s both;">our first loved meeting</p>
+
+    <div class="glass-card" style="animation: fadeUp 0.8s ease 0.3s both; text-align:left;">
+      <p class="serif italic" style="font-size:1.5rem; color:var(--rose-pale); line-height:1.7; margin-bottom:1.2rem;">
+        "Every great love story has a beginning. Ours has a table, a restaurant named Vatika, and two people who didn't yet know how much they'd mean to each other."
+      </p>
+      <p style="color:rgba(255,255,255,0.55); line-height:1.8; font-size:0.95rem;">
+        We sat across from each other at Vatika — and that day changed everything for me. That was the start of my favourite chapter. That's where I first saw you and thought, 
+        <em style="color:var(--rose-light);">this one is different.</em>
+      </p>
+      <div style="margin-top:1.5rem; padding-top:1.2rem; border-top:1px solid rgba(255,143,163,0.15); display:flex; align-items:center; gap:0.8rem;">
+        <span style="font-size:1.8rem;">🌿</span>
+        <span style="font-family:'Caveat',cursive; font-size:1.2rem; color:var(--gold);">The place where we first kissed. I'll never forget it.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE 4: OUR PHOTO GALLERY -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page hidden" id="p3">
+  <div style="z-index:2; width:100%; max-width:700px;">
+    <p style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--rose-light); text-align:center; margin-bottom:0.5rem; animation: fadeIn 0.6s both;">our memories in photos 📸</p>
+    <h2 class="serif" style="font-size:clamp(1.8rem,5vw,2.8rem); font-weight:300; text-align:center; margin-bottom:2rem; animation: fadeUp 0.7s ease 0.1s both;">
+      Every moment with you is <span class="italic rose-text">precious</span>
+    </h2>
+
+    <!-- Photo Grid -->
+    <div class="photo-grid">
+      <div class="photo-item">
+        <img src="sonpapdi-website/public/assets/img1.jpeg" alt="Vatika first kiss as a couple" loading="lazy">
+        <div class="photo-caption">Skylight</div>
+      </div>
+      <div class="photo-item">
+        <img src="sonpapdi-website/public/assets/img2.jpeg" alt="Marine Drive night" loading="lazy">
+        <div class="photo-caption">MY cutuuu</div>
+      </div>
+      <div class="photo-item">
+        <img src="sonpapdi-website/public/assets/img3.jpeg" alt="Golden evening" loading="lazy">
+        <div class="photo-caption">Golden evening together 💕</div>
+      </div>
+      <div class="photo-item">
+        <img src="sonpapdi-website/public/assets/img4.jpeg" alt="Forever promise" loading="lazy">
+        <div class="photo-caption">Forever promise 🌹</div>
+      </div>
+      <div class="photo-item">
+        <img src="sonpapdi-website/public/assets/img5.jpeg" alt="Sweet smile" loading="lazy">
+        <div class="photo-caption">Sweet smile moments 🍬</div>
+      </div>
+      <div class="photo-item">
+        <img src="sonpapdi-website/public/assets/img6.jpeg" alt="Quiet together" loading="lazy">
+        <div class="photo-caption">Quiet together moments ✨</div>
+      </div>
+      <div class="photo-item">
+        <img src="sonpapdi-website/public/assets/img7.jpeg" alt="Happy laughter" loading="lazy">
+        <div class="photo-caption">Happy  with you 😊</div>
+      </div>
+      <div class="photo-item">
+        <img src="sonpapdi-website/public/assets/img8.jpeg" alt="Our love story" loading="lazy">
+        <div class="photo-caption">Our love story in pictures 📖</div>
+      </div>
+    </div>
+
+    <!-- Video Gallery -->
+    <div class="video-gallery">
+      <h3 style="text-align:center; color:var(--gold); margin:2rem 0 1rem; font-family:'Caveat',cursive; font-size:1.3rem;">Our special videos 🎥</h3>
+      <div class="video-grid">
+        <div class="video-item">
+          <video controls poster="sonpapdi-website/public/assets/img1.jpeg">
+            <source src="sonpapdi-website/public/assets/vid1.mp4" type="video/mp4">
+          </video>
+          <div class="video-caption">cutest captured moments 🎬</div>
+        </div>
+        <div class="video-item">
+          <video controls poster="sonpapdi-website/public/assets/img2.jpeg">
+            <source src="sonpapdi-website/public/assets/vid2.mp4" type="video/mp4">
+          </video>
+          <div class="video-caption">special day 🌊</div>
+        </div>
+        <div class="video-item">
+          <video controls poster="sonpapdi-website/public/assets/img3.jpeg">
+            <source src="sonpapdi-website/public/assets/vid3.mp4" type="video/mp4">
+          </video>
+          <div class="video-caption">Memories in motion 💕</div>
+        </div>
+        <div class="video-item">
+          <video controls poster="sonpapdi-website/public/assets/img4.jpeg">
+            <source src="sonpapdi-website/public/assets/vid4.mp4" type="video/mp4">
+          </video>
+          <div class="video-caption">Jointly judging others </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE 4: HOW I FEEL WITH YOU -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page hidden-right" id="p4">
+  <div style="z-index:2; text-align:center; max-width:600px;">
+    <p style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--gold); margin-bottom:0.5rem; animation: fadeIn 0.6s both;">what you do to me 💛</p>
+    <h2 class="serif" style="font-size:clamp(2rem,5vw,3rem); font-weight:300; margin-bottom:2rem; animation: fadeUp 0.7s ease 0.1s both;">
+      When I'm with you,<br><span class="italic gold-text">I feel everything.</span>
+    </h2>
+
+    <div class="glass-card" style="animation: fadeUp 0.8s ease 0.3s both;">
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem; margin-bottom:1.5rem;">
+        <div style="text-align:center; padding:1.2rem; background:rgba(255,255,255,0.04); border-radius:14px;">
+          <div style="font-size:2rem; margin-bottom:0.5rem;">🌅</div>
+          <div style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--rose-light);">Happy</div>
+          <div style="font-size:0.8rem; color:rgba(255,255,255,0.4); margin-top:0.3rem;">Every time. Without fail.</div>
+        </div>
+        <div style="text-align:center; padding:1.2rem; background:rgba(255,255,255,0.04); border-radius:14px;">
+          <div style="font-size:2rem; margin-bottom:0.5rem;">🏠</div>
+          <div style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--rose-light);">Home</div>
+          <div style="font-size:0.8rem; color:rgba(255,255,255,0.4); margin-top:0.3rem;">You are my safe place.</div>
+        </div>
+        <div style="text-align:center; padding:1.2rem; background:rgba(255,255,255,0.04); border-radius:14px;">
+          <div style="font-size:2rem; margin-bottom:0.5rem;">🍬</div>
+          <div style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--rose-light);">Loved</div>
+          <div style="font-size:0.8rem; color:rgba(255,255,255,0.4); margin-top:0.3rem;">Because you're always there for me.</div>
+        </div>
+        <div style="text-align:center; padding:1.2rem; background:rgba(255,255,255,0.04); border-radius:14px;">
+          <div style="font-size:2rem; margin-bottom:0.5rem;">👶</div>
+          <div style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--rose-light);">My baby</div>
+          <div style="font-size:0.8rem; color:rgba(255,255,255,0.4); margin-top:0.3rem;">I'll always treat you like one.</div>
+        </div>
+      </div>
+      <p style="color:rgba(255,255,255,0.55); line-height:1.8; font-size:0.95rem; font-style:italic;">
+        "Whenever I am with you, I feel very happy. You are always there for me — through everything. You deserve someone who does the same."
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE 5: MARINE DRIVE NIGHT -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page hidden-right" id="p5">
+  <div style="z-index:2; text-align:center; max-width:600px;">
+    <p style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--rose-light); margin-bottom:0.5rem; animation: fadeIn 0.6s both;">our last meet 🌊</p>
+    <h2 class="serif" style="font-size:clamp(1.8rem,5vw,3rem); font-weight:300; margin-bottom:0.5rem; animation: fadeUp 0.7s ease 0.1s both;">
+      Marine Drive, Patna
+    </h2>
+    <p style="color:rgba(255,255,255,0.4); font-size:0.9rem; letter-spacing:2px; margin-bottom:1.5rem; animation: fadeIn 0.7s ease 0.2s both;">the night I'll always remember</p>
+
+    <!-- scene illustration -->
+    <div style="position:relative; width:320px; height:160px; margin:0 auto 1.5rem; animation: fadeIn 1s ease 0.3s both;">
+      <div style="position:absolute; bottom:0; left:0; right:0; height:50px; background:linear-gradient(0deg, rgba(100,200,255,0.15), transparent); border-radius:50% 50% 0 0; animation: wave 3s ease-in-out infinite alternate;"></div>
+      <div style="position:absolute; top:15px; right:30px; width:45px; height:45px; background:rgba(255,220,100,0.15); border-radius:50%; box-shadow:0 0 25px rgba(255,220,100,0.25); animation:float 5s ease-in-out infinite;"></div>
+      <!-- stars in scene -->
+      <div style="position:absolute; top:20px; left:30px; width:3px; height:3px; background:white; border-radius:50%; opacity:0.6;"></div>
+      <div style="position:absolute; top:35px; left:80px; width:2px; height:2px; background:white; border-radius:50%; opacity:0.5;"></div>
+      <div style="position:absolute; top:10px; left:160px; width:3px; height:3px; background:white; border-radius:50%; opacity:0.7;"></div>
+      <!-- two figures -->
+      <div style="position:absolute; bottom:45px; left:50%; transform:translateX(-50%); display:flex; align-items:flex-end; gap:5px;">
+        <div style="text-align:center;">
+          <div style="width:16px; height:16px; background:var(--rose); border-radius:50%; margin:0 auto 2px;"></div>
+          <div style="width:12px; height:28px; background:var(--rose); border-radius:4px 4px 0 0;"></div>
+        </div>
+        <div style="text-align:center; transform:translateX(-4px);">
+          <div style="width:14px; height:14px; background:rgba(255,255,255,0.6); border-radius:50%; margin:0 auto 2px;"></div>
+          <div style="width:10px; height:22px; background:rgba(255,255,255,0.4); border-radius:4px 4px 0 0; transform:rotate(5deg); transform-origin:bottom;"></div>
+        </div>
+      </div>
+      <!-- zzz for sleeping -->
+      <div style="position:absolute; bottom:70px; left:calc(50% + 15px); font-family:'Caveat',cursive; font-size:1.1rem; color:rgba(255,255,255,0.4); animation:float 2s ease-in-out infinite;">z z z</div>
+    </div>
+
+    <div class="glass-card" style="animation: fadeUp 0.8s ease 0.4s both; text-align:left;">
+      <p class="serif italic" style="font-size:1.35rem; color:var(--rose-pale); line-height:1.7; margin-bottom:1rem;">
+        "She fell asleep on my shoulder at Marine Drive… and I didn't want that moment to ever end."
+      </p>
+      <p style="color:rgba(255,255,255,0.5); font-size:0.9rem; line-height:1.7;">
+        The sound of the water, the night sky, and you — trusting me enough to sleep against my shoulder. That is one of the best feelings in the world, Sonpapdi. I hold that memory very close.
+      </p>
+      
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE 6: MY MISTAKE -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page hidden-right" id="p6">
+  <div style="z-index:2; text-align:center; max-width:600px;">
+    <p style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--rose-light); margin-bottom:0.5rem; animation: fadeIn 0.6s both;">i need to say something 💔</p>
+
+    <div class="sorry-letters" style="margin-bottom:2rem; animation: fadeIn 0.5s ease 0.1s both;">
+      <span style="animation-delay:0.1s;">I</span>
+      <span style="animation-delay:0.2s;"> </span>
+      <span style="animation-delay:0.3s; color:var(--gold);">a</span>
+      <span style="animation-delay:0.4s; color:var(--gold);">m</span>
+      <span style="animation-delay:0.5s;"> </span>
+      <span style="animation-delay:0.6s; color:var(--rose-light);">s</span>
+      <span style="animation-delay:0.7s; color:var(--rose-light);">o</span>
+      <span style="animation-delay:0.8s; color:var(--rose-light);">r</span>
+      <span style="animation-delay:0.9s; color:var(--rose-light);">r</span>
+      <span style="animation-delay:1.0s; color:var(--rose-light);">y</span>
+    </div>
+
+    <div class="glass-card" style="animation: fadeUp 0.8s ease 0.5s both; text-align:left;">
+      <div style="font-size:2.5rem; text-align:center; margin-bottom:1rem; animation: heartbeat 1.5s ease-in-out infinite;">💔</div>
+      <p style="color:rgba(255,255,255,0.8); line-height:1.9; font-size:1rem; margin-bottom:1.2rem;">
+        I made a mistake. I know that. And I am not here to make excuses — I'm here to be honest with you.
+      </p>
+      <p style="color:rgba(255,255,255,0.55); line-height:1.9; font-size:0.95rem; margin-bottom:1.2rem;">
+        You are always there for me. Always. Through every mood, every fight, every stupid thing I do. You show up. And this time, I failed to do the same for you.
+      </p>
+      <p style="color:var(--rose-light); font-family:'Caveat',cursive; font-size:1.3rem; text-align:center;">
+        You deserved better. You still do. 🌹
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE 7: YOU ARE MY EVERYTHING -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page hidden-right" id="p7">
+  <div style="z-index:2; text-align:center; max-width:600px;">
+    <p style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--rose-light); margin-bottom:0.5rem; animation: fadeIn 0.6s both;">because you should know 💕</p>
+    <h2 class="serif" style="font-size:clamp(2rem,5vw,3rem); font-weight:300; margin-bottom:2rem; animation: fadeUp 0.7s ease 0.1s both;">
+      What you mean<br><span class="italic rose-text">to me</span>
+    </h2>
+
+    <div class="memory-row">
+      <div class="memory-item" style="animation-delay:0.1s;">
+        <span class="memory-icon">🍬</span>
+        <div>
+          <div class="memory-title">You are my Priiti</div>
+          <div class="memory-text">Sweet, layered, unexpected — and completely mine to cherish. Nobody else gets that name from me.</div>
+        </div>
+      </div>
+      <div class="memory-item" style="animation-delay:0.25s;">
+        <span class="memory-icon">👶</span>
+        <div>
+          <div class="memory-title">I treat you like my baby</div>
+          <div class="memory-text">Because you are. You're someone I want to protect, love gently, and always make feel safe.</div>
+        </div>
+      </div>
+      <div class="memory-item" style="animation-delay:0.4s;">
+        <span class="memory-icon">🌊</span>
+        <div>
+          <div class="memory-title">That shoulder was yours</div>
+          <div class="memory-text">Marine Drive. You fell asleep. I stayed still so I wouldn't wake you. That said everything.</div>
+        </div>
+      </div>
+      <div class="memory-item" style="animation-delay:0.55s;">
+        <span class="memory-icon">😊</span>
+        <div>
+          <div class="memory-title">You make me feel very happy</div>
+          <div class="memory-text">That's not a small thing, Sonpapdi. That's everything.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE 8: FINAL PROMISE -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page hidden-right" id="p8">
+  <div style="z-index:2; text-align:center; max-width:600px;">
+    <p style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--gold); margin-bottom:1rem; animation: fadeIn 0.6s both;">my promise to you 🌹</p>
+
+    <div class="promise-ring" style="animation-delay:0.2s;">
+      <div class="promise-ring-inner">
+        <span class="promise-heart">💕</span>
+      </div>
+    </div>
+
+    <h2 class="serif gradient-text" style="font-size:clamp(2rem,6vw,3.5rem); font-weight:300; margin:1.5rem 0 0.8rem; line-height:1.3;">
+      I promise to be<br>who you deserve.
+    </h2>
+
+    <p style="color:rgba(255,255,255,0.55); font-size:0.95rem; line-height:1.9; margin-bottom:2rem; max-width:480px; margin-left:auto; margin-right:auto;">
+      I'll bring the rose — every time, without forgetting.<br>
+      I'll say <em style="color:var(--rose-light);">grogurs</em> and mean it with my whole heart.<br>
+      I'll love your <em style="color:var(--rose-light);">tase</em> for everything.<br>
+      I'll keep being there — the way you've always been there for me.<br>
+      I'll treat my sonpapdi the way she deserves.<br>
+
+    <div style="margin-top: 2rem;">
+      <img src="sonpapdi-website/public/assets/img4.jpeg" 
+           alt="Forever promise" 
+           style="width: 100%; max-width: 280px; height: 200px; object-fit: cover; border-radius: 16px; border: 3px solid var(--gold); box-shadow: 0 8px 25px rgba(212,168,67,0.3);">
+    </div>
+
+    <button onclick="celebrate()" style="padding:1rem 3rem; background:linear-gradient(135deg, var(--rose), #800f2f); border:none; border-radius:50px; color:white; font-family:'DM Sans',sans-serif; font-size:1rem; font-weight:500; cursor:pointer; transition:all 0.3s; box-shadow:0 8px 30px rgba(201,24,74,0.4); animation: pulse 2s infinite;">
+      Yes, I forgive you 💗
+    </button>
+
+    <p style="margin-top:1.5rem; font-family:'Caveat',cursive; font-size:1.5rem; color:var(--rose-light); animation: float 3s ease-in-out infinite;">
+      I love you, always. 🌹
+    </p>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════ -->
+<!-- PAGE 9: COMPLETE MEMORY GALLERY -->
+<!-- ═══════════════════════════════════════════════ -->
+<div class="page hidden" id="p9">
+  <div style="z-index:2; width:100%; max-width:800px;">
+    <p style="font-family:'Caveat',cursive; font-size:1.1rem; color:var(--gold); text-align:center; margin-bottom:0.5rem; animation: fadeIn 0.6s both;">our complete story 📖</p>
+    <h2 class="serif" style="font-size:clamp(1.8rem,5vw,3rem); font-weight:300; text-align:center; margin-bottom:2rem; animation: fadeUp 0.7s ease 0.1s both;">
+      Every <span class="italic rose-text">memory</span> we made
+    </h2>
+
+    <!-- Complete Photo Gallery -->
+    <div class="complete-gallery">
+      <div class="gallery-section">
+        <h3 style="color:var(--rose-light); text-align:center; margin-bottom:1.5rem; font-family:'Caveat',cursive; font-size:1.3rem;">Our Beautiful Moments 💕</h3>
+        <div class="photo-masonry">
+          <div class="masonry-item large">
+            <img src="sonpapdi-website/public/assets/img1.jpeg" alt="Vatika first meeting">
+            <div class="masonry-caption">skylight </div>
+          </div>
+          <div class="masonry-item">
+            <img src="sonpapdi-website/public/assets/img2.jpeg" alt="Marine Drive night">
+            <div class="masonry-caption">MY cutuuu</div>
+          </div>
+          <div class="masonry-item">
+            <img src="sonpapdi-website/public/assets/img3.jpeg" alt="Golden evening">
+            <div class="masonry-caption">Golden evening 💫</div>
+          </div>
+          <div class="masonry-item large">
+            <img src="sonpapdi-website/public/assets/img4.jpeg" alt="Forever promise">
+            <div class="masonry-caption">Forever promise 🌹</div>
+          </div>
+          <div class="masonry-item">
+            <img src="sonpapdi-website/public/assets/img5.jpeg" alt="Sweet smile">
+            <div class="masonry-caption">Sweet smile moments 🍬</div>
+          </div>
+          <div class="masonry-item">
+            <img src="sonpapdi-website/public/assets/img6.jpeg" alt="Quiet together">
+            <div class="masonry-caption">Quiet together ✨</div>
+          </div>
+          <div class="masonry-item">
+            <img src="sonpapdi-website/public/assets/img7.jpeg" alt="Happy laughter">
+            <div class="masonry-caption">Happy laughter 😊</div>
+          </div>
+          <div class="masonry-item large">
+            <img src="sonpapdi-website/public/assets/img8.jpeg" alt="Our love story">
+            <div class="masonry-caption">Our love story 📖</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Video Showcase -->
+      <div class="gallery-section">
+        <h3 style="color:var(--gold); text-align:center; margin:2rem 0 1.5rem; font-family:'Caveat',cursive; font-size:1.3rem;">Our Precious Videos 🎬</h3>
+        <div class="video-showcase">
+          <div class="video-showcase-item">
+            <video controls poster="sonpapdi-website/public/assets/img1.jpeg" preload="metadata">
+              <source src="sonpapdi-website/public/assets/vid1.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-showcase-caption">First captured moments 🎥</div>
+          </div>
+          <div class="video-showcase-item">
+            <video controls poster="sonpapdi-website/public/assets/img2.jpeg" preload="metadata">
+              <source src="sonpapdi-website/public/assets/vid2.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-showcase-caption">Marine Drive night 🌊</div>
+          </div>
+          <div class="video-showcase-item">
+            <video controls poster="sonpapdi-website/public/assets/img3.jpeg" preload="metadata">
+              <source src="sonpapdi-website/public/assets/vid3.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-showcase-caption">Memories in motion 💕</div>
+          </div>
+          <div class="video-showcase-item">
+            <video controls poster="sonpapdi-website/public/assets/img4.jpeg" preload="metadata">
+              <source src="sonpapdi-website/public/assets/vid4.mp4" type="video/mp4">
+              Your browser does not support the video tag.
+            </video>
+            <div class="video-showcase-caption">Forever on film 🎬</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="text-align:center; margin-top:3rem;">
+      <p style="color:rgba(255,255,255,0.7); font-family:'Caveat',cursive; font-size:1.4rem; margin-bottom:1rem;">
+        Every photo, every video, every moment — they're all ours 💕
+      </p>
+      <p style="color:var(--gold); font-size:0.9rem;">
+        Scroll back up to relive our story, my sonpapdi 🌹
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════ NEXT BUTTON ════════════════ -->
+<button class="nav-btn" id="nextBtn" onclick="nextPage()">Next →</button>
+
+<script>
+// ── CURSOR ──────────────────────────────────────
+const cur = document.getElementById('cur');
+const curT = document.getElementById('curT');
+document.addEventListener('mousemove', e => {
+  cur.style.left = e.clientX + 'px';
+  cur.style.top  = e.clientY + 'px';
+  setTimeout(() => {
+    curT.style.left = e.clientX + 'px';
+    curT.style.top  = e.clientY + 'px';
+  }, 80);
+});
+
+// ── STARS ───────────────────────────────────────
+const sf = document.getElementById('starfield');
+for (let i = 0; i < 130; i++) {
+  const s = document.createElement('div');
+  s.className = 'star';
+  const sz = 1 + Math.random() * 2.5;
+  s.style.cssText = `width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${1.5+Math.random()*3}s;animation-delay:${Math.random()*4}s`;
+  sf.appendChild(s);
+}
+
+// ── PETALS ──────────────────────────────────────
+const pf = document.getElementById('petalfield');
+for (let i = 0; i < 20; i++) {
+  const p = document.createElement('div');
+  p.className = 'petal';
+  p.style.cssText = `left:${Math.random()*100}%;--pd:${6+Math.random()*9}s;--sw:${-70+Math.random()*140};animation-delay:${Math.random()*10}s;transform:rotate(${Math.random()*360}deg)`;
+  pf.appendChild(p);
+}
+
+// ── PAGES - Scroll-based system ───────────────────────────────────────
+const pages = ['p0','p1','p2a','p2','p3','p4','p5','p6','p7','p8','p9'];
+let cur_page = 0;
+
+// Initialize first page
+document.getElementById('p0').classList.add('visible');
+
+// NAV DOTS
+const nd = document.getElementById('navdots');
+pages.forEach((_, i) => {
+  const d = document.createElement('div');
+  d.className = 'ndot' + (i===0?' active':'');
+  d.id = 'nd'+i;
+  d.onclick = () => gotoPage(i);
+  nd.appendChild(d);
+});
+
+function gotoPage(n) {
+  if (n === cur_page) return;
+
+  // Hide current page
+  document.getElementById(pages[cur_page]).classList.remove('visible');
+  document.getElementById(pages[cur_page]).classList.add('hidden');
+
+  // Show new page
+  const newPage = document.getElementById(pages[n]);
+  newPage.classList.remove('hidden');
+  // Force reflow for animation
+  newPage.offsetHeight;
+  newPage.classList.add('visible');
+
+  // Scroll to page
+  newPage.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  cur_page = n;
+
+  // Update nav dots
+  document.querySelectorAll('.ndot').forEach((d,i) => d.classList.toggle('active', i===n));
+
+  // Update next button
+  const btn = document.getElementById('nextBtn');
+  if (n === pages.length - 1) {
+    btn.style.display = 'none';
+  } else {
+    btn.style.display = 'block';
+    if (n === pages.length - 2) {
+      btn.textContent = 'See all our memories 💕';
+    } else {
+      btn.textContent = 'Next →';
+    }
+  }
+}
+
+function nextPage() {
+  if (cur_page < pages.length - 1) gotoPage(cur_page + 1);
+}
+
+// keyboard and mouse wheel
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === 'ArrowDown' || e.key === ' ') nextPage();
+  if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { if (cur_page > 0) gotoPage(cur_page - 1); }
+});
+
+// mouse wheel support
+let wheelTimeout;
+document.addEventListener('wheel', e => {
+  e.preventDefault();
+  clearTimeout(wheelTimeout);
+  wheelTimeout = setTimeout(() => {
+    if (e.deltaY > 0) {
+      nextPage();
+    } else if (e.deltaY < 0 && cur_page > 0) {
+      gotoPage(cur_page - 1);
+    }
+  }, 100);
+}, { passive: false });
+
+// touch swipe - improved for mobile
+let ts = 0;
+let touchStartY = 0;
+document.addEventListener('touchstart', e => {
+  ts = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+});
+document.addEventListener('touchend', e => {
+  const dx = ts - e.changedTouches[0].clientX;
+  const dy = touchStartY - e.changedTouches[0].clientY;
+  
+  // Only handle horizontal swipes if vertical movement is minimal
+  if (Math.abs(dy) < 50) {
+    if (Math.abs(dx) > 50) {
+      dx > 0 ? nextPage() : (cur_page > 0 && gotoPage(cur_page - 1));
+    }
+  }
+});
+
+// ── CELEBRATE ──────────────────────────────────
+function celebrate() {
+  const colors = ['#ff4d6d','#ff8fa3','#ffd6e0','#ffb3c6','#d4a843','#fff','#ffc8dd','#c9184a'];
+  for (let i = 0; i < 100; i++) {
+    const c = document.createElement('div');
+    c.className = 'conf';
+    c.style.cssText = `
+      left:${5+Math.random()*90}%;
+      top:${Math.random()*30}%;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      animation-duration:${1.2+Math.random()*1}s;
+      animation-delay:${Math.random()*0.5}s;
+      width:${6+Math.random()*8}px;
+      height:${6+Math.random()*8}px;
+      border-radius:${Math.random()>0.5?'50%':'2px'};
+    `;
+    document.body.appendChild(c);
+    setTimeout(() => c.remove(), 3000);
+  }
+  const btn = event.target;
+  btn.textContent = '💕 Thank you, my Priiti!';
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+}
+</script>
+</body>
+</html>
